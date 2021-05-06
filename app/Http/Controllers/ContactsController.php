@@ -53,9 +53,7 @@ class ContactsController extends Controller
      */
     public function show(Contacts $contacts)
     {
-        if ($this->check($contacts))
-            return view('contacts-details', compact('contacts'));
-        return abort(404);
+        return view('contacts-details', compact('contacts'));
     }
 
     /**
@@ -66,9 +64,7 @@ class ContactsController extends Controller
      */
     public function edit(Contacts $contacts)
     {
-        if ($this->check($contacts))
-            return view('contacts-edit', compact('contacts'));
-        return redirect('/contacts');
+        return view('contacts-edit', compact('contacts'));
     }
 
     /**
@@ -129,11 +125,5 @@ class ContactsController extends Controller
             'city' => 'required',
             'post_code' => 'required'
         ]);
-    }
-
-    protected function check(Contacts $contacts){
-        if ($contacts->user_id != \Auth::id())
-            return False;
-        return True;
     }
 }
