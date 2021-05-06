@@ -13,6 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\ContactsController::class, 'index'])->middleware(['auth']);
+Route::get('/contacts', [\App\Http\Controllers\ContactsController::class, 'index'])->middleware(['auth'])->name('contacts.list');
+Route::get('/contacts/create', [\App\Http\Controllers\ContactsController::class, 'create'])->middleware(['auth'])->name('contacts.create');
+Route::post('/contacts', [\App\Http\Controllers\ContactsController::class, 'store'])->middleware(['auth']);
+Route::get('/contacts/{contacts}', [\App\Http\Controllers\ContactsController::class, 'show'])->middleware(['auth']);
+Route::get('/contacts/{contacts}/edit', [\App\Http\Controllers\ContactsController::class, 'edit'])->middleware(['auth']);
+Route::put('/contacts/{contacts}', [\App\Http\Controllers\ContactsController::class, 'update'])->middleware(['auth']);
+Route::delete('/contacts/{contacts}', [\App\Http\Controllers\ContactsController::class, 'destroy'])->middleware(['auth']);
+Route::post('/search/', [\App\Http\Controllers\ContactsController::class, 'search'])->name('search');
+Route::get('/search/', function () { return abort(404); });
+Route::get('/myaccount/', [\App\Http\Controllers\UserController::class, 'index'])->middleware(['auth'])->name('my.account');
+Route::get('/myaccount/{user}/edit', [\App\Http\Controllers\UserController::class, 'edit'])->middleware(['auth']);
+Route::put('/myaccount/{user}', [\App\Http\Controllers\UserController::class, 'update'])->middleware(['auth']);
+Route::get('/myaccount/{user}/edit/password', [\App\Http\Controllers\UserController::class, 'editPassword'])->middleware(['auth']);
+Route::put('/myaccount/{user}/edit', [\App\Http\Controllers\UserController::class, 'updatePassword'])->middleware(['auth']);
+
+require __DIR__.'/auth.php';
