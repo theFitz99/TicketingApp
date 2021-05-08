@@ -32,17 +32,22 @@
                                 <input type="text" class="form-control @error('phone') is-invalid @enderror" id="inputPhone" name="phone"  value="{{old('phone')}}" placeholder="Contact's phone">
                                 <p class="text-danger">{{ $errors->first('phone') }}</p>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
+                                <label for="inputIban">IBAN</label>
+                                <input type="text" class="form-control @error('iban') is-invalid @enderror" id="inputIban" name="iban" value="{{old('phone')}}" placeholder="Contact's IBAN">
+                                <p class="text-danger">{{ $errors->first('iban') }}</p>
+                            </div>
+                            <div class="form-group col-md-5">
                                 <label for="inputAddress">Address</label>
                                 <input type="text" class="form-control @error('address') is-invalid @enderror" id="inputAddress" name="address" value="{{old('address')}}" placeholder="Contact's address">
                                 <p class="text-danger">{{ $errors->first('address') }}</p>
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-2">
                                 <label for="inputCity">City</label>
                                 <input type="text" class="form-control @error('city') is-invalid @enderror" id="inputCity" name="city"  value="{{old('city')}}" placeholder="Contact's city">
                                 <p class="text-danger">{{ $errors->first('city') }}</p>
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-2">
                                 <label for="inputPostCode">Post code</label>
                                 <input type="text" class="form-control @error('post_code') is-invalid @enderror" id="inputPostCode" name="post_code"  value="{{old('city')}}" placeholder="Contact's post code">
                                 <p class="text-danger">{{ $errors->first('post_code') }}</p>

@@ -18,6 +18,11 @@
                     <x-nav-link :href="route('contacts.create')" :active="request()->routeIs('contacts.create')">
                         {{ __('Create Contact') }}
                     </x-nav-link>
+                    @if (\Auth::user()->is_admin)
+                    <x-nav-link :href="route('user.list')" :active="request()->routeIs('user.list')">
+                        {{ __('Users') }}
+                    </x-nav-link>
+                    @endif
                 </idv>
             </div>
 
@@ -37,6 +42,9 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link :href="route('user.details', \Auth::id())">
+                            {{ __('My account') }}
+                        </x-dropdown-link>
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -47,9 +55,6 @@
                                 {{ __('Log out') }}
                             </x-dropdown-link>
                         </form>
-                        <x-dropdown-link :href="route('my.account')">
-                            {{ __('My account') }}
-                        </x-dropdown-link>
                     </x-slot>
                 </x-dropdown>
             </div>

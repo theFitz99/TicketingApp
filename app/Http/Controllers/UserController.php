@@ -16,9 +16,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::find(\Auth::id());
+        $users = User::all();
 
-        return view('myaccount', compact('user'));
+        return view('users-list', compact('users'));
     }
 
     /**
@@ -50,7 +50,15 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+
+        return view('user-details', compact('user'));
+    }
+
+    public function showContacts(User $user)
+    {
+        $contacts = $user->contacts;
+
+        return view('user-contacts', compact('contacts', 'user'));
     }
 
     /**
@@ -62,12 +70,12 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return view('myaccount-edit', compact('user'));
+        return view('user-edit', compact('user'));
     }
 
     public function editPassword(User $user)
     {
-        return view('myaccount-editPassword', compact('user'));
+        return view('user-editPassword', compact('user'));
     }
 
     /**
@@ -84,20 +92,26 @@ class UserController extends Controller
             'email' => 'required|email',
         ]));
 
-        return redirect('/myaccount');
+        return redirect('/users/'.$user->id);
     }
 
-    public function updatePassword(Request $request, User $user) {
-        $request->validate([
-            'old_password' => 'password',
-            'new_password' => 'min:7|max:13',
-            'newpassword_again' => 'same:new_password'
-        ]);
-
-        if (Hash::check($request->input('old_password'), $user->password)) {
-            User::where('id', $user->id)->update(['password' => Hash::make($request->input('new_password'))]);
-            return redirect('/myaccount')->with('message', 'Password changed!');
+    public function updatePassword(Request $request, User $user)
+    {
+        if (\Auth::user()->is_admin) {
+            $request->validate([
+                'new_password' => 'min:7|max:13',
+                'newpassword_again' => 'same:new_password'
+            ]);
+        } else {
+            $request->validate([
+                'old_password' => 'password',
+                'new_password' => 'min:7|max:13',
+                'newpassword_again' => 'same:new_password'
+            ]);
         }
+        User::where('id', $user->id)->update(['password' => Hash::make($request->input('new_password'))]);
+
+        return redirect('/users/'.$user->id)->with('message', 'Password changed!');
     }
 
     /**

@@ -26,6 +26,7 @@ class ContactsFactory extends Factory
             'user_id' => User::factory(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
+            'iban' => $this->faker->bankAccountNumber(),
             'address' => $this->faker->address(),
             'city' => $this->faker->city(),
             'post_code' => $this->faker->postcode(),

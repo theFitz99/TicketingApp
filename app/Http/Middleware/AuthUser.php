@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class AuthUser
 {
-    /**
+    /**y
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -18,6 +18,8 @@ class AuthUser
      */
     public function handle(Request $request, Closure $next)
     {
+        if (\Auth::user()->is_admin)
+            return $next($request);
         if ($request->route('contacts')) {
             if (($request->route('contacts'))->user_id != \Auth::id()) {
                 return abort(401);

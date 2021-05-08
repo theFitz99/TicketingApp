@@ -17,7 +17,10 @@ class ContactsController extends Controller
      */
     public function index()
     {
-        $contacts = User::find(\Auth::id())->contacts;
+        if(\Auth::user()->is_admin)
+            $contacts = Contacts::all();
+        else
+            $contacts = User::find(\Auth::id())->contacts;
 
         return view('dashboard', compact('contacts'));
     }
@@ -118,6 +121,7 @@ class ContactsController extends Controller
         return request()->validate([
             'first_name' => 'required',
             'user_id' => 'required',
+            'iban' => 'required|numeric',
             'last_name' => 'required',
             'address' => 'required',
             'email' => 'required|email',
