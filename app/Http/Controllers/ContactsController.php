@@ -108,10 +108,17 @@ class ContactsController extends Controller
         $firstName = $request->input('searchFirstName');
         $lastName = $request->input('searchLastName');
 
-        $contacts = Contacts::where('user_id', \Auth::id())->where(function ($query) use ($firstName, $lastName) {
-            $query->where('first_name', 'LIKE', "%{$firstName}%")
-                ->where('last_name', 'LIKE', "%{$lastName}%");
-        })->get();
+        if (\Auth::user()->is_admin) {
+            $contacts = Contacts::where(function ($query) use ($firstName, $lastName) {
+                $query->where('first_name', 'LIKE', "%{$firstName}%")
+                    ->where('last_name', 'LIKE', "%{$lastName}%");
+            })->get();
+        } else {
+            $contacts = Contacts::where('user_id', \Auth::id())->where(function ($query) use ($firstName, $lastName) {
+                $query->where('first_name', 'LIKE', "%{$firstName}%")
+                    ->where('last_name', 'LIKE', "%{$lastName}%");
+            })->get();
+        }
 
         return view('dashboard', compact('contacts'));
     }

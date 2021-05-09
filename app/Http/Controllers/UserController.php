@@ -124,4 +124,37 @@ class UserController extends Controller
     {
         //
     }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'userName' => 'required',
+        ]);
+
+        $name = $request->input('userName');
+
+        $users = User::where(function ($query) use ($name) {
+            $query->where('name', 'LIKE', "%{$name}%");
+        })->get();
+
+        return view('users-list', compact('users'));
+    }
+
+    public function searchContacts(Request $request, User $user)
+    {
+        $request->validate([
+            'searchFirstName' => 'required_without_all:searchLastName',
+            'searchLastName' => 'required_without_all:searchFirstName'
+        ]);
+
+        $firstName = $request->input('searchFirstName');
+        $lastName = $request->input('searchLastName');
+
+        $contacts = $user->contacts()->where(function ($query) use ($firstName, $lastName) {
+            $query->where('first_name', 'LIKE', "%{$firstName}%")
+                ->where('last_name', 'LIKE', "%{$lastName}%");
+        })->get();
+
+        return view('user-contacts', compact('contacts', 'user'));
+    }
 }

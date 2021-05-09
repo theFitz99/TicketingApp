@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if($contacts->isNotEmpty())
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <form action="{{ route('search') }}" method="POST" autocomplete="off">
+                        <form action="{{ route('search.contacts') }}" method="POST" autocomplete="off">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-3">
