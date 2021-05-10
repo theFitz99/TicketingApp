@@ -10,6 +10,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if($users->isNotEmpty())
                     <div class="p-6 bg-white border-b border-gray-200">
+                        @if(session()->has('user_deleted'))
+                            <div class="alert alert-success">
+                                {{ session()->get('user_deleted') }}
+                            </div>
+                        @endif
                         <form action="{{ route('search.user') }}" method="POST" autocomplete="off">
                             @csrf
                             <div class="form-row">

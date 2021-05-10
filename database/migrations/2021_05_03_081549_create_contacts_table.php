@@ -18,7 +18,7 @@ class CreateContactsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('first_name');
             $table->string('last_name');
-            $table->unsignedbigInteger('iban');
+            $table->text('iban');
             $table->string('address');
             $table->string('city');
             $table->string('post_code');

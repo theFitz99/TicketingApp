@@ -17,10 +17,13 @@ class ContactsController extends Controller
      */
     public function index()
     {
-        if(\Auth::user()->is_admin)
+        if (\Auth::guest()) {
+            return view('welcome');
+        } else if (\Auth::user()->is_admin) {
             $contacts = Contacts::all();
-        else
+        } else {
             $contacts = User::find(\Auth::id())->contacts;
+        }
 
         return view('dashboard', compact('contacts'));
     }
@@ -43,9 +46,9 @@ class ContactsController extends Controller
      */
     public function store(Request $request)
     {
-        Contacts::create($this->validateContact());
+        Contacts::create($this->validateContact($request));
 
-        return redirect('/contacts');
+        return redirect('/contacts')->with('contact_created', 'Contact successfully created!');;;
     }
 
     /**
@@ -79,9 +82,9 @@ class ContactsController extends Controller
      */
     public function update(Request $request, Contacts $contacts)
     {
-        Contacts::where('id', $contacts->id)->update($this->validateContact());
+        Contacts::where('id', $contacts->id)->update($this->validateContact($request));
 
-        return redirect('/contacts/' . $contacts->id);
+        return redirect('/contacts/' . $contacts->id)->with('contact_updated', 'Contact information successfully updated!');
 
     }
 
@@ -95,7 +98,7 @@ class ContactsController extends Controller
     {
         $contacts->delete();
 
-        return redirect('/contacts');
+        return redirect('/contacts')->with('contact_deleted', 'Contact successfully deleted!');;
     }
 
     public function search(Request $request)
@@ -109,12 +112,12 @@ class ContactsController extends Controller
         $lastName = $request->input('searchLastName');
 
         if (\Auth::user()->is_admin) {
-            $contacts = Contacts::where(function ($query) use ($firstName, $lastName) {
+            $contacts = Contacts::query()->where(function ($query) use ($firstName, $lastName) {
                 $query->where('first_name', 'LIKE', "%{$firstName}%")
                     ->where('last_name', 'LIKE', "%{$lastName}%");
             })->get();
         } else {
-            $contacts = Contacts::where('user_id', \Auth::id())->where(function ($query) use ($firstName, $lastName) {
+            $contacts = Contacts::query()->where('user_id', \Auth::id())->where(function ($query) use ($firstName, $lastName) {
                 $query->where('first_name', 'LIKE', "%{$firstName}%")
                     ->where('last_name', 'LIKE', "%{$lastName}%");
             })->get();
@@ -123,12 +126,12 @@ class ContactsController extends Controller
         return view('dashboard', compact('contacts'));
     }
 
-    protected function validateContact()
+    protected function validateContact(Request $request)
     {
-        return request()->validate([
+        return $request->validate([
             'first_name' => 'required',
             'user_id' => 'required',
-            'iban' => 'required|numeric',
+            'iban' => 'required',
             'last_name' => 'required',
             'address' => 'required',
             'email' => 'required|email',

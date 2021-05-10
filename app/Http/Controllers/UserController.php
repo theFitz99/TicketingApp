@@ -92,7 +92,7 @@ class UserController extends Controller
             'email' => 'required|email',
         ]));
 
-        return redirect('/users/'.$user->id);
+        return redirect('/users/'.$user->id)->with('password_updated', 'User information successfully updated!');
     }
 
     public function updatePassword(Request $request, User $user)
@@ -100,18 +100,18 @@ class UserController extends Controller
         if (\Auth::user()->is_admin) {
             $request->validate([
                 'new_password' => 'min:7|max:13',
-                'newpassword_again' => 'same:new_password'
+                'new_password_again' => 'same:new_password'
             ]);
         } else {
             $request->validate([
                 'old_password' => 'password',
                 'new_password' => 'min:7|max:13',
-                'newpassword_again' => 'same:new_password'
+                'new_password_again' => 'same:new_password'
             ]);
         }
         User::where('id', $user->id)->update(['password' => Hash::make($request->input('new_password'))]);
 
-        return redirect('/users/'.$user->id)->with('message', 'Password changed!');
+        return redirect('/users/'.$user->id)->with('user_updated', 'Password successfully changed!');
     }
 
     /**
@@ -122,7 +122,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+            return redirect('/users')->with('user_deleted', 'User successfully deleted');
     }
 
     public function search(Request $request)

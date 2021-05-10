@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Contacts;
-use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 

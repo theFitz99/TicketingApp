@@ -10,6 +10,16 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if($contacts->isNotEmpty())
                     <div class="p-6 bg-white border-b border-gray-200">
+                        @if(session()->has('contact_deleted'))
+                            <div class="alert alert-success">
+                                {{ session()->get('contact_deleted') }}
+                            </div>
+                        @endif
+                        @if(session()->has('contact_created'))
+                            <div class="alert alert-success">
+                                {{ session()->get('contact_created') }}
+                            </div>
+                        @endif
                         <form action="{{ route('search.contacts') }}" method="POST" autocomplete="off">
                             @csrf
                             <div class="form-row">

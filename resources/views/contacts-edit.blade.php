@@ -52,7 +52,7 @@
                                 <label for="inputPostCode">Post code</label>
                                 <input type="text" class="form-control @error('post_code') is-invalid @enderror" id="inputPostCode" name="post_code"  value="{{ $contacts->post_code }}">
                                 <p class="text-danger">{{ $errors->first('post_code') }}</p>
-                                <input type="hidden" value="{{ \Auth::id() }}" name="user_id">
+                                <input type="hidden" value="{{ $contacts->user_id }}" name="user_id">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Update</button>

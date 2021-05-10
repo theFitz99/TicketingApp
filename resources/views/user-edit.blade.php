@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Update</button>
-                        <a class="btn btn-warning" href="{{ route('user.details', $user->id) }}/edit/password">Edit password</a>
+                        <a class="btn btn-warning" href="{{ route('user.edit.password', $user->id) }}">Edit password</a>
                     </form>
                 </div>
             </div>
