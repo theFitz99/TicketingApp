@@ -20,9 +20,9 @@ class ContactsController extends Controller
         if (\Auth::guest()) {
             return view('welcome');
         } else if (\Auth::user()->is_admin) {
-            $contacts = Contacts::all();
+            $contacts = Contacts::query()->orderBy('last_name')->get();
         } else {
-            $contacts = User::find(\Auth::id())->contacts;
+            $contacts = User::query()->find(\Auth::id())->contacts()->get();
         }
 
         return view('dashboard', compact('contacts'));
@@ -46,7 +46,7 @@ class ContactsController extends Controller
      */
     public function store(Request $request)
     {
-        Contacts::create($this->validateContact($request));
+        Contacts::query()->create($this->validateContact($request));
 
         return redirect('/contacts')->with('contact_created', 'Contact successfully created!');;;
     }
@@ -60,6 +60,20 @@ class ContactsController extends Controller
     public function show(Contacts $contacts)
     {
         return view('contacts-details', compact('contacts'));
+    }
+
+    public function showOpenTickets(Contacts $contacts)
+    {
+        $tickets = $contacts->tickets()->whereNull('is_done')->get();
+
+        return view('contacts-tickets', compact('contacts', 'tickets'));
+    }
+
+    public function showClosedTickets(Contacts $contacts)
+    {
+        $tickets = $contacts->tickets()->whereNotNull('is_done')->get();
+
+        return view('contacts-tickets', compact('contacts', 'tickets'));
     }
 
     /**
@@ -82,7 +96,7 @@ class ContactsController extends Controller
      */
     public function update(Request $request, Contacts $contacts)
     {
-        Contacts::where('id', $contacts->id)->update($this->validateContact($request));
+        Contacts::query()->where('id', $contacts->id)->update($this->validateContact($request));
 
         return redirect('/contacts/' . $contacts->id)->with('contact_updated', 'Contact information successfully updated!');
 
@@ -115,12 +129,12 @@ class ContactsController extends Controller
             $contacts = Contacts::query()->where(function ($query) use ($firstName, $lastName) {
                 $query->where('first_name', 'LIKE', "%{$firstName}%")
                     ->where('last_name', 'LIKE', "%{$lastName}%");
-            })->get();
+            })->orderBy('last_name')->get();
         } else {
             $contacts = Contacts::query()->where('user_id', \Auth::id())->where(function ($query) use ($firstName, $lastName) {
                 $query->where('first_name', 'LIKE', "%{$firstName}%")
                     ->where('last_name', 'LIKE', "%{$lastName}%");
-            })->get();
+            })->orderBy('last_name')->get();
         }
 
         return view('dashboard', compact('contacts'));

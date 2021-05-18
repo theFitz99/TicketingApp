@@ -26,6 +26,10 @@ class AuthUser
             if (($request->route('user'))->id != \Auth::id()) {
                 return abort(401);
             }
+        } else if ($request->route('ticket')){
+            if (($request->route('ticket'))->user_id != \Auth::id()) {
+                return abort(401);
+            }
         }
         return $next($request);
     }

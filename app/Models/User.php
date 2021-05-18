@@ -43,6 +43,10 @@ class User extends Authenticatable
 
     public function contacts(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Contacts::class);
+        return $this->hasMany(Contacts::class)->orderBy('last_name');
+    }
+
+    public function tickets() {
+        return $this->hasMany(Ticket::class)->latest();
     }
 }

@@ -18,12 +18,20 @@
                     <x-nav-link :href="route('contact.create')" :active="request()->routeIs('contact.create')">
                         {{ __('Create Contact') }}
                     </x-nav-link>
-                    @if (\Auth::user()->is_admin)
-                    <x-nav-link :href="route('user.list')" :active="request()->routeIs('user.list')">
-                        {{ __('Users') }}
+                    <x-nav-link :href="route('ticket.open.list')" :active="request()->routeIs('ticket.open.list')">
+                        {{ __('Open tickets') }}
                     </x-nav-link>
-                    @endif
-                </idv>
+                    <x-nav-link :href="route('ticket.closed.list')" :active="request()->routeIs('ticket.closed.list')">
+                        {{ __('Closed tickets') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('ticket.create')" :active="request()->routeIs('ticket.create')">
+                        {{ __('Create ticket') }}
+                    </x-nav-link>
+                    @if (\Auth::user()->is_admin)
+                        <x-nav-link :href="route('user.list')" :active="request()->routeIs('user.list')">
+                            {{ __('Users') }}
+                        </x-nav-link>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->
@@ -45,10 +53,14 @@
                         <x-dropdown-link :href="route('user.details', \Auth::id())">
                             {{ __('My account') }}
                         </x-dropdown-link>
+                        @if(\Auth::user()->is_admin)
+                        <x-dropdown-link :href="route('ticket.type')">
+                            {{ __('Add ticket type') }}
+                        </x-dropdown-link>
+                        @endif
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">

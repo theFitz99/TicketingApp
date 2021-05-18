@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::query()->orderBy('name')->get();
 
         return view('users-list', compact('users'));
     }
@@ -56,9 +56,23 @@ class UserController extends Controller
 
     public function showContacts(User $user)
     {
-        $contacts = $user->contacts;
+        $contacts = $user->contacts()->get();
 
         return view('user-contacts', compact('contacts', 'user'));
+    }
+
+    public function showOpenTickets(User $user)
+    {
+        $tickets = $user->tickets()->whereNull('is_done')->get();
+
+        return view('user-tickets', compact('user', 'tickets'));
+    }
+
+    public function showClosedTickets(User $user)
+    {
+        $tickets = $user->tickets()->whereNotNull('is_done')->get();
+
+        return view('user-tickets', compact('user', 'tickets'));
     }
 
     /**
@@ -137,7 +151,7 @@ class UserController extends Controller
 
         $users = User::where(function ($query) use ($name) {
             $query->where('name', 'LIKE', "%{$name}%");
-        })->get();
+        })->orderBy('name')->get();
 
         return view('users-list', compact('users'));
     }
@@ -155,7 +169,7 @@ class UserController extends Controller
         $contacts = $user->contacts()->where(function ($query) use ($firstName, $lastName) {
             $query->where('first_name', 'LIKE', "%{$firstName}%")
                 ->where('last_name', 'LIKE', "%{$lastName}%");
-        })->get();
+        })->orderBy('last_name')->get();
 
         return view('user-contacts', compact('contacts', 'user'));
     }

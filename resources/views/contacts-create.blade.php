@@ -24,7 +24,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="inputEmail">Email</label>
-                                <input type="text" class="form-control @error('email') is-invalid @enderror" id="inputEmail" name="email" value="{{old('email')}}" placeholder="Contact's email">
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="inputEmail" name="email" value="{{old('email')}}" placeholder="Contact's email">
                                 <p class="text-danger">{{ $errors->first('email') }}</p>
                             </div>
                             <div class="form-group col-md-3">

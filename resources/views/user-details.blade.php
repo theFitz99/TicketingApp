@@ -29,6 +29,8 @@
                         <input type="submit" onclick="return confirm('Are you sure you want to delete this user?');" class="btn btn-danger" value="Delete user">
                         @if (\Auth::user()->is_admin)
                         <a class="btn btn-info" href="{{ route('user.contacts', $user->id) }}">Contacts</a>
+                        <a class="btn btn-info" href="{{ route('user.open.tickets', $user->id) }}">Open tickets</a>
+                        <a class="btn btn-info" href="{{ route('user.closed.tickets', $user->id) }}">Closed tickets</a>
                         @endif
                     </form>
                 </div>

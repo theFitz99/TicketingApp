@@ -15,4 +15,8 @@ class Contacts extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function tickets() {
+        return $this->hasMany(Ticket::class , 'contact_id')->latest();
+    }
 }

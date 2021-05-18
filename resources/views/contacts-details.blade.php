@@ -30,6 +30,8 @@
                         @method('DELETE')
                         <a class="btn btn-warning" href="{{ route('contact.edit', $contacts->id) }}">Edit contact</a>
                         <input type="submit" onclick="return confirm('Are you sure you want to delete this contact?');" class="btn btn-danger" value="Delete contact">
+                        <a class="btn btn-info" href="{{ route('contact.open.tickets', $contacts->id) }}">Open tickets</a>
+                        <a class="btn btn-info" href="{{ route('contact.closed.tickets', $contacts->id) }}">Closed tickets</a>
                     </form>
                 </div>
             </div>
