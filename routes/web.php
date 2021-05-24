@@ -15,12 +15,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\ContactsController::class, 'index']);
 Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->middleware(['auth', 'admin'])->name('user.list');
-Route::post('users/search', [\App\Http\Controllers\UserController::class, 'search'])->middleware(['auth', 'admin'])->name('search.user');
+Route::get('users/search', [\App\Http\Controllers\UserController::class, 'search'])->middleware(['auth', 'admin'])->name('search.user');
 Route::get('/users/{user}/open_tickets', [\App\Http\Controllers\UserController::class, 'showOpenTickets'])->middleware(['auth', 'auth.user'])->name('user.open.tickets');
+Route::get('users/{user}/open_tickets/search', [\App\Http\Controllers\UserController::class, 'searchOpenTickets'])->middleware(['auth'])->name('search.user.open.tickets');
 Route::get('/users/{user}/closed_tickets', [\App\Http\Controllers\UserController::class, 'showClosedTickets'])->middleware(['auth', 'auth.user'])->name('user.closed.tickets');
+Route::get('users/{user}/closed_tickets/search', [\App\Http\Controllers\UserController::class, 'searchClosedTickets'])->middleware(['auth'])->name('search.user.closed.tickets');
 Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->middleware(['auth', 'auth.user'])->name('user.details');
 Route::get('/users/{user}/contacts', [\App\Http\Controllers\UserController::class, 'showContacts'])->middleware(['auth', 'auth.user'])->name('user.contacts');
-Route::post('users/{user}/contacts/search', [\App\Http\Controllers\UserController::class, 'searchContacts'])->middleware(['auth', 'auth.user'])->name('search.user.contacts');
+Route::get('users/{user}/contacts/search', [\App\Http\Controllers\UserController::class, 'searchContacts'])->middleware(['auth', 'auth.user'])->name('search.user.contacts');
 Route::get('/users/{user}/edit', [\App\Http\Controllers\UserController::class, 'edit'])->middleware(['auth', 'auth.user'])->name('user.edit');
 Route::put('/users/{user}', [\App\Http\Controllers\UserController::class, 'update'])->middleware(['auth', 'auth.user']);
 Route::delete('/users/{user}', [\App\Http\Controllers\UserController::class, 'destroy'])->middleware(['auth', 'admin']);
@@ -30,20 +32,20 @@ Route::put('/users/{user}/edit', [\App\Http\Controllers\UserController::class, '
 Route::get('/contacts', [\App\Http\Controllers\ContactsController::class, 'index'])->middleware(['auth'])->name('contact.list');
 Route::post('/contacts', [\App\Http\Controllers\ContactsController::class, 'store'])->middleware(['auth']);
 Route::get('/contacts/create', [\App\Http\Controllers\ContactsController::class, 'create'])->middleware(['auth'])->name('contact.create');
+Route::get('contacts/search', [\App\Http\Controllers\ContactsController::class, 'search'])->middleware(['auth'])->name('search.contacts');
 Route::get('/contacts/{contacts}/open_tickets', [\App\Http\Controllers\ContactsController::class, 'showOpenTickets'])->middleware(['auth', 'auth.user'])->name('contact.open.tickets');
+Route::get('contacts/{contacts}/open_tickets/search', [\App\Http\Controllers\ContactsController::class, 'searchOpenTickets'])->middleware(['auth'])->name('search.contacts.open.tickets');
+Route::get('contacts/{contacts}/closed_tickets/search', [\App\Http\Controllers\ContactsController::class, 'searchClosedTickets'])->middleware(['auth'])->name('search.contacts.closed.tickets');
 Route::get('/contacts/{contacts}/closed_tickets', [\App\Http\Controllers\ContactsController::class, 'showClosedTickets'])->middleware(['auth', 'auth.user'])->name('contact.closed.tickets');
 Route::get('/contacts/{contacts}', [\App\Http\Controllers\ContactsController::class, 'show'])->middleware(['auth', 'auth.user'])->name('contact.details');
 Route::get('/contacts/{contacts}/edit', [\App\Http\Controllers\ContactsController::class, 'edit'])->middleware(['auth', 'auth.user'])->name('contact.edit');
 Route::put('/contacts/{contacts}', [\App\Http\Controllers\ContactsController::class, 'update'])->middleware(['auth', 'auth.user']);
 Route::delete('/contacts/{contacts}', [\App\Http\Controllers\ContactsController::class, 'destroy'])->middleware(['auth', 'auth.user']);
 
-Route::post('contacts/search', [\App\Http\Controllers\ContactsController::class, 'search'])->middleware(['auth'])->name('search.contacts');
-Route::get('contacts/search', function () { return abort(404); });
-Route::get('users/search', function () { return abort(404); });
-Route::get('users/{user}/contacts/search', function () { return abort(404); });
-
 Route::get('/open_tickets', [\App\Http\Controllers\TicketController::class, 'indexOpen'])->middleware(['auth'])->name('ticket.open.list');
+Route::get('open_tickets/search', [\App\Http\Controllers\TicketController::class, 'searchOpen'])->middleware(['auth'])->name('search.open.tickets');
 Route::get('/closed_tickets', [\App\Http\Controllers\TicketController::class, 'indexClosed'])->middleware(['auth'])->name('ticket.closed.list');
+Route::get('closed_tickets/search', [\App\Http\Controllers\TicketController::class, 'searchClosed'])->middleware(['auth'])->name('search.closed.tickets');
 Route::get('/tickets/create', [\App\Http\Controllers\TicketController::class, 'create'])->middleware(['auth'])->name('ticket.create');
 Route::post('/open_tickets', [\App\Http\Controllers\TicketController::class, 'store'])->middleware(['auth']);
 Route::get('/tickets/type', [\App\Http\Controllers\TicketTypeController::class, 'create'])->middleware(['auth', 'admin'])->name('ticket.type');

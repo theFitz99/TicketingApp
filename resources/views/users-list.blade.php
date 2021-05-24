@@ -15,8 +15,7 @@
                                 {{ session()->get('user_deleted') }}
                             </div>
                         @endif
-                        <form action="{{ route('search.user') }}" method="POST" autocomplete="off">
-                            @csrf
+                        <form action="{{ route('search.user') }}" method="GET" autocomplete="off">
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <label for="userName">User search</label>
@@ -32,6 +31,11 @@
                             <h4><span class="text-muted">User ({{ ++$cnt }}): </span><a href="{{route('user.details', $user->id)}}">{{ $user->name }}</a> ({{ $user->email }})</h4>
                         </div>
                     @endforeach
+                    @if($users->hasPages())
+                        <div class="p-6 bg-white border-b border-gray-200">
+                            {{ $users->withQueryString()->links() }}
+                        </div>
+                    @endif
                 @else
                     <div class="p-6 bg-white border-b border-gray-200">
                         <h4>There is no contacts!</h4>

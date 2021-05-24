@@ -20,9 +20,9 @@ class ContactsController extends Controller
         if (\Auth::guest()) {
             return view('welcome');
         } else if (\Auth::user()->is_admin) {
-            $contacts = Contacts::query()->orderBy('last_name')->get();
+            $contacts = Contacts::query()->orderBy('last_name')->paginate(10);
         } else {
-            $contacts = User::query()->find(\Auth::id())->contacts()->get();
+            $contacts = User::query()->find(\Auth::id())->contacts()->paginate(10);
         }
 
         return view('dashboard', compact('contacts'));
@@ -64,16 +64,16 @@ class ContactsController extends Controller
 
     public function showOpenTickets(Contacts $contacts)
     {
-        $tickets = $contacts->tickets()->whereNull('is_done')->get();
+        $tickets = $contacts->tickets()->whereNull('is_done')->paginate(10);
 
-        return view('contacts-tickets', compact('contacts', 'tickets'));
+        return view('contacts-open-tickets', compact('contacts', 'tickets'));
     }
 
     public function showClosedTickets(Contacts $contacts)
     {
-        $tickets = $contacts->tickets()->whereNotNull('is_done')->get();
+        $tickets = $contacts->tickets()->whereNotNull('is_done')->paginate(10);
 
-        return view('contacts-tickets', compact('contacts', 'tickets'));
+        return view('contacts-closed-tickets', compact('contacts', 'tickets'));
     }
 
     /**
@@ -129,15 +129,47 @@ class ContactsController extends Controller
             $contacts = Contacts::query()->where(function ($query) use ($firstName, $lastName) {
                 $query->where('first_name', 'LIKE', "%{$firstName}%")
                     ->where('last_name', 'LIKE', "%{$lastName}%");
-            })->orderBy('last_name')->get();
+            })->orderBy('last_name')->paginate(10);
         } else {
             $contacts = Contacts::query()->where('user_id', \Auth::id())->where(function ($query) use ($firstName, $lastName) {
                 $query->where('first_name', 'LIKE', "%{$firstName}%")
                     ->where('last_name', 'LIKE', "%{$lastName}%");
-            })->orderBy('last_name')->get();
+            })->orderBy('last_name')->paginate(10);
         }
 
         return view('dashboard', compact('contacts'));
+    }
+
+    public function searchOpenTickets(Request $request, Contacts $contacts)
+    {
+        $request->validate([
+            'searchTicketName' => 'required',
+        ]);
+
+        $ticketName = $request->input('searchTicketName');
+
+        $tickets = $contacts->tickets()->where(function ($query) use ($ticketName) {
+            $query->where('title', 'LIKE', "%{$ticketName}%")
+                ->whereNull('is_done');
+        })->paginate(10);
+
+        return view('contacts-open-tickets', compact('contacts', 'tickets'));
+    }
+
+    public function searchClosedTickets(Request $request, Contacts $contacts)
+    {
+        $request->validate([
+            'searchTicketName' => 'required',
+        ]);
+
+        $ticketName = $request->input('searchTicketName');
+
+        $tickets = $contacts->tickets()->where(function ($query) use ($ticketName) {
+            $query->where('title', 'LIKE', "%{$ticketName}%")
+                ->whereNotNull('is_done');
+        })->paginate(10);
+
+        return view('contacts-closed-tickets', compact('contacts', 'tickets'));
     }
 
     protected function validateContact(Request $request)

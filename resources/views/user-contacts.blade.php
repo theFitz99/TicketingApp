@@ -10,8 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if($contacts->isNotEmpty())
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <form action="{{ route('search.user.contacts', $user->id) }}" method="POST" autocomplete="off">
-                            @csrf
+                        <form action="{{ route('search.user.contacts', $user->id) }}" method="GET" autocomplete="off">
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <label for="searchFirstName">First name</label>
@@ -32,6 +31,11 @@
                             <h4><span class="text-muted">Contact ({{ ++$cnt }}): </span><a href="{{ route('contact.details', $contact->id) }}">{{ $contact->first_name }} {{ $contact->last_name }}</a> ({{ $contact->email }})</h4>
                         </div>
                     @endforeach
+                    @if($contacts->hasPages())
+                        <div class="p-6 bg-white border-b border-gray-200">
+                            {{ $contacts->withQueryString()->links() }}
+                        </div>
+                    @endif
                 @else
                     <div class="p-6 bg-white border-b border-gray-200">
                         <h4>There is no contacts!</h4>

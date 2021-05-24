@@ -23,7 +23,7 @@ class ContactsFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::all()->random(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'iban' => $this->faker->iban(),

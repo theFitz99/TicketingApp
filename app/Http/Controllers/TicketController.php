@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AddedTicket;
+use App\Models\Contacts;
 use App\Models\Ticket;
 use App\Models\Ticket_type;
 use App\Models\User;
@@ -17,23 +19,23 @@ class TicketController extends Controller
     public function indexOpen()
     {
         if (\Auth::user()->is_admin) {
-            $tickets = Ticket::query()->whereNull('is_done')->latest()->get();
+            $tickets = Ticket::query()->whereNull('is_done')->latest()->paginate(10);
         } else {
-            $tickets = User::query()->find(\Auth::id())->tickets()->whereNull('is_done')->get();
+            $tickets = User::query()->find(\Auth::id())->tickets()->whereNull('is_done')->paginate(10);
         }
 
-        return view('ticket-list', compact('tickets'));
+        return view('ticket-open-list', compact('tickets'));
     }
 
     public function indexClosed()
     {
         if (\Auth::user()->is_admin) {
-            $tickets = Ticket::query()->whereNotNull('is_done')->latest()->get();
+            $tickets = Ticket::query()->whereNotNull('is_done')->latest()->paginate(10);
         } else {
-            $tickets = User::query()->find(\Auth::id())->tickets()->whereNotNull('is_done')->get();
+            $tickets = User::query()->find(\Auth::id())->tickets()->whereNotNull('is_done')->paginate(10);
         }
 
-        return view('ticket-list', compact('tickets'));
+        return view('ticket-closed-list', compact('tickets'));
     }
     /**
      * Show the form for creating a new resource.
@@ -55,6 +57,7 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         Ticket::query()->create($this->validateTicket($request));
+        AddedTicket::dispatch($request->input('contact_id'));
 
         return redirect('/open_tickets')->with('ticket_created', 'Ticket successfully created');
     }
@@ -93,7 +96,7 @@ class TicketController extends Controller
     {
         Ticket::query()->where('id', $ticket->id)->update($this->validateTicket($request));
 
-        return redirect('/tickets/' . $ticket->id)->with('ticket_updated', 'Ticket information successfully updated!');
+        return redirect('/open_tickets/' . $ticket->id)->with('ticket_updated', 'Ticket information successfully updated!');
     }
 
     /**
@@ -107,6 +110,52 @@ class TicketController extends Controller
         $ticket->delete();
 
         return redirect('/open_tickets')->with('ticket_deleted', 'Ticket successfully deleted!');;
+    }
+
+    public function searchOpen(Request $request)
+    {
+        $request->validate([
+            'searchTicketName' => 'required_without_all:searchLastName',
+        ]);
+
+        $ticketName = $request->input('searchTicketName');
+
+        if (\Auth::user()->is_admin) {
+            $tickets = Ticket::query()->where(function ($query) use ($ticketName) {
+                $query->where('title', 'LIKE', "%{$ticketName}%")
+                    ->whereNull('is_done');
+            })->latest()->paginate(10);
+        } else {
+            $tickets = Ticket::query()->where('user_id', \Auth::id())->where(function ($query) use ($ticketName) {
+                $query->where('title', 'LIKE', "%{$ticketName}%")
+                    ->whereNull('is_done');
+            })->latest()->paginate(10);
+        }
+
+        return view('ticket-open-list', compact('tickets'));
+    }
+
+    public function searchClosed(Request $request)
+    {
+        $request->validate([
+            'searchTicketName' => 'required',
+        ]);
+
+        $ticketName = $request->input('searchTicketName');
+
+        if (\Auth::user()->is_admin) {
+            $tickets = Ticket::query()->where(function ($query) use ($ticketName) {
+                $query->where('title', 'LIKE', "%{$ticketName}%")
+                    ->whereNotNull('is_done');
+            })->latest()->paginate(10);
+        } else {
+            $tickets = Ticket::query()->where('user_id', \Auth::id())->where(function ($query) use ($ticketName) {
+                $query->where('title', 'LIKE', "%{$ticketName}%")
+                    ->whereNotNull('is_done');
+            })->latest()->paginate(10);
+        }
+
+        return view('ticket-closed-list', compact('tickets'));
     }
 
     protected function validateTicket(Request $request)
