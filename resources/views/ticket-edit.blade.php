@@ -12,6 +12,20 @@
                     <form method="POST" action="{{route('ticket.details', $ticket->id)}}">
                         @csrf
                         @method('PUT')
+                        @if(\Auth::user()->is_admin)
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="user_id">Assigned to</label>
+                                <select class="form-control @error('user_id') is-invalid @enderror" name="user_id" id="user_id">
+                                    <option value="{{ $ticket->user->id }}" selected>{{ $ticket->user->name }}</option>
+                                    @foreach(\App\Models\User::query()->where("id", "!=", $ticket->user->id)->get() as $user)
+                                        <option value="{{ $user->id }}" @if(old('user_id') == $user->id) selected @endif>{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                                <p class="text-danger">{{ $errors->first('user_id') }}</p>
+                            </div>
+                        </div>
+                        @endif
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="title">Ticket title</label>
@@ -22,8 +36,10 @@
                                 <label for="description">Ticket description</label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3" style="resize: none">{{ $ticket->description }}</textarea>
                                 <p class="text-danger">{{ $errors->first('description') }}</p>
-                                <input type="hidden" value="{{ $ticket->user->id }}" name="user_id">
                                 <input type="hidden" value="{{ $ticket->contact->id }}" name="contact_id">
+                                @if(!\Auth::user()->is_admin)
+                                    <input type="hidden" value="{{ $ticket->user->id }}" name="user_id">
+                                @endif
                                 <input type="hidden" value="{{ $ticket->ticket_type->id }}" name="type_id">
                             </div>
                             @if(!$ticket->is_done)

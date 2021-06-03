@@ -32,12 +32,12 @@
                         </div>
                     @endforeach
                     @if($users->hasPages())
-                        <div class="p-6 bg-white border-b border-gray-200">
+                        <div class="p-6 bg-white">
                             {{ $users->withQueryString()->links() }}
                         </div>
                     @endif
                 @else
-                    <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="p-6 bg-white">
                         <h4>There is no contacts!</h4>
                     </div>
                 @endif

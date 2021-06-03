@@ -1,56 +1,49 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Contact list') }}
+            {{ __(\Auth::user()->name . "'s dashboard" )}}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                @if($contacts->isNotEmpty())
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        @if(session()->has('contact_deleted'))
-                            <div class="alert alert-success">
-                                {{ session()->get('contact_deleted') }}
-                            </div>
-                        @endif
-                        @if(session()->has('contact_created'))
-                            <div class="alert alert-success">
-                                {{ session()->get('contact_created') }}
-                            </div>
-                        @endif
-                        <form action="{{ route('search.contacts') }}" method="GET" autocomplete="off">
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <label for="searchFirstName">First name</label>
-                                    <input type="text" name="searchFirstName" id="searchFirstName" class="form-control @error('searchFirstName') is-invalid @enderror" value="{{ old('searchFirstName') }}" placeholder="Contact's first name">
-                                    <small class="text-danger">{{ $errors->first('searchFirstName') }}</small>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="searchLastName">Last name</label>
-                                    <input type="text" name="searchLastName" id="searchLastName" class="form-control @error('searchLastName') is-invalid @enderror" value="{{ old('searchLastName') }}" placeholder="Contact's last name">
-                                    <small class="text-danger">{{ $errors->first('searchLastName') }}</small>
-                                </div>
-                            </div>
-                            <input type="submit" value="Search" class="btn btn-primary" name="searchBtn" id="searchBtn">
-                        </form>
+            <div class="card-columns">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Contacts
+                        </h5>
+                        <p class="card-text">
+                            My: {{ \App\Models\Contacts::query()->where('user_id', \Auth::id())->count() }}<br>
+                            Created in last 24h: {{ \App\Models\Contacts::query()->where("created_at", ">=", \Carbon\Carbon::now()->subDay())->where('user_id', \Auth::id())->count() }}<br>
+                            In percentage of total: {{ round(\App\Models\Contacts::query()->where('user_id', \Auth::id())->count() / \App\Models\Contacts::query()->count() * 100, 2)}}%
+                        </p>
                     </div>
-                    @foreach($contacts as $cnt=>$contact)
-                        <div class="p-6 bg-white border-b border-gray-200">
-                            <h4><span class="text-muted">Contact ({{ ++$cnt }}): </span><a href="{{ route('contact.details', $contact->id) }}">{{ $contact->first_name }} {{ $contact->last_name }}</a> ({{ $contact->email }})</h4>
-                        </div>
-                    @endforeach
-                    @if($contacts->hasPages())
-                        <div class="p-6 bg-white border-b border-gray-200">
-                            {{ $contacts->withQueryString()->links() }}
-                        </div>
-                    @endif
-                @else
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        <h4>There is no contacts!</h4>
+                </div>
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Tickets
+                        </h5>
+                        <p class="card-text">
+                            My: {{ \App\Models\Ticket::query()->where('user_id', \Auth::id())->count() }}; Opened: {{ \App\Models\Ticket::query()->where('user_id', \Auth::id())->whereNull('is_done')->count() }};  Closed: {{ \App\Models\Ticket::query()->where('user_id', \Auth::id())->whereNotNull('is_done')->count() }}<br>
+                            Created in last 24h: {{ \App\Models\Ticket::query()->where("created_at", ">=", \Carbon\Carbon::now()->subDay())->where('user_id', \Auth::id())->count() }}<br>
+                            In percentage of total: {{ round(\App\Models\Ticket::query()->where('user_id', \Auth::id())->count() / \App\Models\Ticket::query()->count() * 100, 2)}}%
+                        </p>
                     </div>
-                @endif
+                </div>
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Global
+                        </h5>
+                        <p class="card-text">
+                            Contacts: {{ \App\Models\Contacts::query()->count() }}<br>
+                            Users: {{ \App\Models\User::query()->count() }}<br>
+                            Tickets: {{ \App\Models\Ticket::query()->count() }}; Opened: {{ \App\Models\Ticket::query()->whereNull('is_done')->count() }}; Closed: {{ \App\Models\Ticket::query()->whereNotNull('is_done')->count() }}<br>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

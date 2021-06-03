@@ -17,15 +17,13 @@ class ContactsController extends Controller
      */
     public function index()
     {
-        if (\Auth::guest()) {
-            return view('welcome');
-        } else if (\Auth::user()->is_admin) {
+        if (\Auth::user()->is_admin) {
             $contacts = Contacts::query()->orderBy('last_name')->paginate(10);
         } else {
             $contacts = User::query()->find(\Auth::id())->contacts()->paginate(10);
         }
 
-        return view('dashboard', compact('contacts'));
+        return view('contacts-list', compact('contacts'));
     }
 
     /**
@@ -137,7 +135,7 @@ class ContactsController extends Controller
             })->orderBy('last_name')->paginate(10);
         }
 
-        return view('dashboard', compact('contacts'));
+        return view('contacts-list', compact('contacts'));
     }
 
     public function searchOpenTickets(Request $request, Contacts $contacts)

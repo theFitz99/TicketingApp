@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __($user->name . "'s contacts") }}
+            {{ __('Contact list') }}
         </h2>
     </x-slot>
 
@@ -10,16 +10,26 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if($contacts->isNotEmpty())
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <form action="{{ route('search.user.contacts', $user->id) }}" method="GET" autocomplete="off">
+                        @if(session()->has('contact_deleted'))
+                            <div class="alert alert-success">
+                                {{ session()->get('contact_deleted') }}
+                            </div>
+                        @endif
+                        @if(session()->has('contact_created'))
+                            <div class="alert alert-success">
+                                {{ session()->get('contact_created') }}
+                            </div>
+                        @endif
+                        <form action="{{ route('search.contacts') }}" method="GET" autocomplete="off">
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <label for="searchFirstName">First name</label>
-                                    <input type="text" name="searchFirstName" id="searchFirstName" class="form-control @error('searchFirstName') is-invalid @enderror" placeholder="Contact's first name">
+                                    <input type="text" name="searchFirstName" id="searchFirstName" class="form-control @error('searchFirstName') is-invalid @enderror" value="{{ old('searchFirstName') }}" placeholder="Contact's first name">
                                     <small class="text-danger">{{ $errors->first('searchFirstName') }}</small>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="searchLastName">Last name</label>
-                                    <input type="text" name="searchLastName" id="searchLastName" class="form-control @error('searchLastName') is-invalid @enderror" placeholder="Contact's last name">
+                                    <input type="text" name="searchLastName" id="searchLastName" class="form-control @error('searchLastName') is-invalid @enderror" value="{{ old('searchLastName') }}" placeholder="Contact's last name">
                                     <small class="text-danger">{{ $errors->first('searchLastName') }}</small>
                                 </div>
                             </div>

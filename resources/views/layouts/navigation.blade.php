@@ -5,13 +5,16 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('contact.list') }}">
+                    <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <idv class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('contact.list')" :active="request()->routeIs('contact.list')">
                         {{ __('Contacts') }}
                     </x-nav-link>
@@ -19,7 +22,7 @@
                         {{ __('Create Contact') }}
                     </x-nav-link>
                     <x-nav-link :href="route('ticket.open.list')" :active="request()->routeIs('ticket.open.list')">
-                        {{ __('Open tickets') }}
+                        {{ __('Opened tickets') }}
                     </x-nav-link>
                     <x-nav-link :href="route('ticket.closed.list')" :active="request()->routeIs('ticket.closed.list')">
                         {{ __('Closed tickets') }}
@@ -86,8 +89,8 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('contact.list')" :active="request()->routeIs('contact.list')">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('DashboardController') }}
             </x-responsive-nav-link>
         </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\AddedTicket;
+use App\Events\CompletedTicket;
 use App\Models\Contacts;
 use App\Models\Ticket;
 use App\Models\Ticket_type;
@@ -95,8 +96,12 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket)
     {
         Ticket::query()->where('id', $ticket->id)->update($this->validateTicket($request));
+        if ($request->input('is_done'))
+        {
+            CompletedTicket::dispatch($request->input('contact_id'), $ticket->id);
+        }
 
-        return redirect('/open_tickets/' . $ticket->id)->with('ticket_updated', 'Ticket information successfully updated!');
+        return redirect('/tickets/' . $ticket->id)->with('ticket_updated', 'Ticket information successfully updated!');
     }
 
     /**
@@ -115,7 +120,7 @@ class TicketController extends Controller
     public function searchOpen(Request $request)
     {
         $request->validate([
-            'searchTicketName' => 'required_without_all:searchLastName',
+            'searchTicketName' => 'required',
         ]);
 
         $ticketName = $request->input('searchTicketName');

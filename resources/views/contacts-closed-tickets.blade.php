@@ -22,18 +22,18 @@
                         </form>
                     </div>
                     @foreach($tickets as $ticket)
-                        <div class="p-6 @if($ticket->is_done) bg-green-200 @else bg-red-200 @endif border-b border-t-4 border-gray-200">
+                        <div class="p-6 bg-green-200 border-b-4 border-gray-200">
                             <h4><span class="text-muted">Ticket ({{ $ticket->ticket_type->description  }}): </span><a href="{{route('ticket.details', $ticket->id)}}">{{ $ticket->title }}</a></h4>
                             <h4><span class="text-muted">Contact: </span> <a href="{{ route('contact.details', $ticket->contact->id) }}"> {{ $ticket->contact->first_name }} {{ $ticket->contact->last_name }}</a></h4>
                         </div>
                     @endforeach
                     @if($tickets->hasPages())
-                        <div class="p-6 bg-white border-b border-gray-200">
+                        <div class="p-6 bg-white">
                             {{ $tickets->withQueryString()->links() }}
                         </div>
                     @endif
                 @else
-                    <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="p-6 bg-white">
                         <h4>There is no tickets!</h4>
                     </div>
                 @endif

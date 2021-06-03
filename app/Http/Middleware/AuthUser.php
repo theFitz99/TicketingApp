@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Ticket;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class AuthUser
         if (\Auth::user()->is_admin)
             return $next($request);
         if ($request->route('contacts')) {
-            if (($request->route('contacts'))->user_id != \Auth::id()) {
+            if (($request->route('contacts'))->user_id != \Auth::id() and !Ticket::query()->where('user_id', \Auth::id())->where('contact_id', ($request->route('contacts'))->id)->exists()) {
                 return abort(401);
             }
         } else if ($request->route('user')){

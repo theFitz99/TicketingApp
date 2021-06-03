@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Events\AddedTicket;
+use App\Events\CompletedTicket;
+use App\Listeners\SendCompletedEmail;
 use App\Listeners\SendEmail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         AddedTicket::class => [
           SendEmail::class,
+        ],
+        CompletedTicket::class => [
+            SendCompletedEmail::class
         ],
     ];
 
